@@ -20,6 +20,7 @@ loop do # main loop
   prompt "Welcome to the Morgage Calculator!"
 
   loan_amount = ''
+
   loop do
     prompt "What is the loan amount? (do not enter $ or ,)"
     loan_amount = gets.chomp
@@ -31,6 +32,7 @@ loop do # main loop
   end
 
   interest_rate = ''
+
   loop do
     prompt "What is the interest rate?"
     prompt "Please enter in the format 8 for 8% or 1.5 for 1.5%"
@@ -43,6 +45,7 @@ loop do # main loop
   end
 
   years = ''
+
   loop do
     prompt "What is the loan duration (in years)?"
     years = gets.chomp

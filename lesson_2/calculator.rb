@@ -30,6 +30,7 @@ end
 prompt MESSAGES['welcome']
 
 name = ''
+
 loop do
   name = gets.chomp
   if name.empty?
@@ -76,6 +77,7 @@ loop do # main loop
   prompt operator_prompt
 
   operator = ''
+
   loop do
     operator = gets.chomp
 

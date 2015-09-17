@@ -23,7 +23,9 @@ def display_results(player, computer)
 end
 
 loop do # main loop
+
   choice = ''
+
   loop do
     prompt "Choose one: #{VALID_CHOICES.join(', ')}"
     choice = gets.chomp
