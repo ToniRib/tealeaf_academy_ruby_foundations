@@ -1,15 +1,20 @@
 # rock_paper_scissors.rb
 
-VALID_CHOICES = %w(rock paper scissors)
+VALID_CHOICES = %w(rock paper scissors spock lizard)
+WINNING_CHOICES = {
+  'rock' => %w(lizard scissors),
+  'paper' => %w(rock spock),
+  'scissors' => %w(lizard paper),
+  'spock' => %w(scissors rock),
+  'lizard' => %w(spock paper)
+}
 
 def prompt(message)
   puts "=> #{message}"
 end
 
 def win?(first, second)
-  (first == 'rock' && second == 'scissors') ||
-    (first == 'paper' && second == 'rock') ||
-    (first == 'scissors' && second == 'paper')
+  WINNING_CHOICES[first].include?(second)
 end
 
 def display_results(player, computer)
@@ -23,7 +28,6 @@ def display_results(player, computer)
 end
 
 loop do # main loop
-
   choice = ''
 
   loop do
