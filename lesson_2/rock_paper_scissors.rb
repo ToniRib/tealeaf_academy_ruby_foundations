@@ -53,50 +53,60 @@ def determine_winner(player, computer)
   end
 end
 
-player_score = 0
-computer_score = 0
-
 loop do # main loop
-  choice = ''
 
-  loop do
+  player_score = 0
+  computer_score = 0
+
+  loop do # inner loop for scoring
+    choice = ''
+
     loop do
-      prompt "Choose one: #{VALID_CHOICES.join(', ')}"
-      choice = gets.chomp
+      loop do
+        prompt "Choose one: #{VALID_CHOICES.join(', ')}"
+        choice = gets.chomp
 
-      if choice.start_with?('s') && choice.length == 1
-        prompt "If choosing scissors or spock, please type at least 2 letters"
-      else
+        if choice.start_with?('s') && choice.length == 1
+          prompt "If choosing scissors or spock, please type at least 2 letters"
+        else
+          break
+        end
+      end
+
+      choice = which_choice?(choice)
+
+      if VALID_CHOICES.include?(choice)
         break
+      else
+        prompt("That's not a valid choice.")
       end
     end
 
-    choice = which_choice?(choice)
+    computer_choice = VALID_CHOICES.sample
 
-    if VALID_CHOICES.include?(choice)
-      break
-    else
-      prompt("That's not a valid choice.")
+    puts "You chose: #{choice}; Computer chose: #{computer_choice}"
+
+    winner = determine_winner(choice, computer_choice)
+
+    display_results(winner)
+
+    if winner == 'player'
+      player_score += 1
+    elsif winner == 'computer'
+      computer_score += 1
     end
+
+    puts "Player Score: #{player_score}, Computer Score: #{computer_score}"
+
+    if player_score == 5
+      prompt "You've won the game! Congratulations!"
+      break
+    elsif computer_score == 5
+      prompt "Sorry, but the computer won this round."
+      break
+    end
+
   end
-
-  computer_choice = VALID_CHOICES.sample
-
-  puts "You chose: #{choice}; Computer chose: #{computer_choice}"
-
-  winner = determine_winner(choice, computer_choice)
-
-  display_results(winner)
-
-  if winner == 'player'
-    player_score += 1
-  elsif winner == 'computer'
-    computer_score += 1
-  end
-
-  puts "Player Score: #{player_score}, Computer Score: #{computer_score}"
-
-  break unless player_score < 5 && computer_score < 5
 
   prompt "Do you want to play again?"
   answer = gets.chomp
