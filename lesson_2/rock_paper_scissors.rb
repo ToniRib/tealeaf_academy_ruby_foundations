@@ -53,6 +53,14 @@ def determine_winner(player, computer)
   end
 end
 
+def display_game_winner(player, computer)
+  if player == 5
+    prompt "You've won the game! Congratulations!"
+  elsif computer == 5
+    prompt "Sorry, but the computer won this round."
+  end
+end
+
 loop do # main loop
 
   player_score = 0
@@ -98,11 +106,8 @@ loop do # main loop
 
     puts "Player Score: #{player_score}, Computer Score: #{computer_score}"
 
-    if player_score == 5
-      prompt "You've won the game! Congratulations!"
-      break
-    elsif computer_score == 5
-      prompt "Sorry, but the computer won this round."
+    if player_score == 5 || computer_score == 5
+      display_game_winner(player_score, computer_score)
       break
     end
 
