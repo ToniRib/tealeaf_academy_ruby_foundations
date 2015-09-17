@@ -17,6 +17,21 @@ def win?(first, second)
   WINNING_CHOICES[first].include?(second)
 end
 
+def which_choice?(word)
+  case word
+  when /^ro?c?k?$/
+    'rock'
+  when /^pa?p?e?r?$/
+    'paper'
+  when /^li?z?a?r?d?$/
+    'lizard'
+  when /^sci?s?s?o?r?s?$/
+    'scissors'
+  when /^spo?c?k?$/
+    'spock'
+  end
+end
+
 def display_results(player, computer)
   if win?(player, computer)
     prompt "You won!"
@@ -31,8 +46,18 @@ loop do # main loop
   choice = ''
 
   loop do
-    prompt "Choose one: #{VALID_CHOICES.join(', ')}"
-    choice = gets.chomp
+    loop do
+      prompt "Choose one: #{VALID_CHOICES.join(', ')}"
+      choice = gets.chomp
+
+      if choice.start_with?('s') && choice.length == 1
+        prompt "If choosing scissors or spock, please type at least 2 letters"
+      else
+        break
+      end
+    end
+
+    choice = which_choice?(choice)
 
     if VALID_CHOICES.include?(choice)
       break
