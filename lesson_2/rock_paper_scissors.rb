@@ -32,15 +32,29 @@ def which_choice?(word)
   end
 end
 
-def display_results(player, computer)
-  if win?(player, computer)
+def display_results(winner)
+  case winner
+  when 'player'
     prompt "You won!"
-  elsif win?(computer, player)
+  when 'computer'
     prompt "You lose!"
-  else
+  when 'tie'
     prompt "It's a tie!"
   end
 end
+
+def determine_winner(player, computer)
+  if win?(player, computer)
+    winner = 'player'
+  elsif win?(computer, player)
+    winner = 'computer'
+  else
+    winner = 'tie'
+  end
+end
+
+player_score = 0
+computer_score = 0
 
 loop do # main loop
   choice = ''
@@ -70,7 +84,19 @@ loop do # main loop
 
   puts "You chose: #{choice}; Computer chose: #{computer_choice}"
 
-  display_results(choice, computer_choice)
+  winner = determine_winner(choice, computer_choice)
+
+  display_results(winner)
+
+  if winner == 'player'
+    player_score += 1
+  elsif winner == 'computer'
+    computer_score += 1
+  end
+
+  puts "Player Score: #{player_score}, Computer Score: #{computer_score}"
+
+  break unless player_score < 5 && computer_score < 5
 
   prompt "Do you want to play again?"
   answer = gets.chomp
