@@ -94,35 +94,60 @@ def player_turn(board, marker)
   display_board(board)
 end
 
-puts "Welcome to Tic Tac Toe!"
-puts "-----------------------"
-
-marker = ''
-prompt "Would you like to be X or O?"
-loop do
-  marker = gets.chomp.upcase
-  if valid_marker?(marker)
-    display_marker(marker)
-    break
-  else
-    prompt "Please choose either X or O"
-  end
-end
-
-computer_marker = (marker == 'O') ? 'X' : 'O'
-
-board = initialize_board
-display_board(board)
-
-loop do # main game loop
-  player_turn(board, marker)
-  break if win?(board, marker)
-  break if board_full?(board)
+def computer_turn(board, marker)
   puts "The computer is thinking..."
   sleep(1)
-  computer_places_marker(board, computer_marker)
+  computer_places_marker(board, marker)
   puts "The computer has chosen!"
   display_board(board)
-  break if win?(board, computer_marker)
-  break if board_full?(board)
+end
+
+def display_tie_message
+  puts "Looks like it's a tie this time."
+end
+
+loop do # main game loop
+  puts "Welcome to Tic Tac Toe!"
+  puts "-----------------------"
+
+  marker = ''
+  prompt "Would you like to be X or O?"
+  loop do
+    marker = gets.chomp.upcase
+    if valid_marker?(marker)
+      display_marker(marker)
+      break
+    else
+      prompt "Please choose either X or O"
+    end
+  end
+
+  computer_marker = (marker == 'O') ? 'X' : 'O'
+
+  board = initialize_board
+  display_board(board)
+
+  loop do # main turn loop
+    player_turn(board, marker)
+    if win?(board, marker)
+      puts "You win!!"
+      break
+    elsif board_full?(board)
+      puts display_tie_message
+      break
+    end
+
+    computer_turn(board, computer_marker)
+    if win?(board, computer_marker)
+      puts "The computer beat you!!"
+      break
+    elsif board_full?(board)
+      puts display_tie_message
+      break
+    end
+  end
+
+  prompt "Would you like to play again?"
+  answer = gets.chomp
+  break unless answer.downcase.start_with?('y')
 end
