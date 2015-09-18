@@ -85,17 +85,13 @@ end
 
 def win?(board, marker)
   marker_positions = board.select { |_, val| val == marker }.keys.to_a
-  binding.pry
+  combos = marker_positions.combination(3).to_a
+  combos.any? { |combo| WINNING_SET.include?(combo) }
 end
 
 def player_turn(board, marker)
   player_places_marker(board, marker)
   display_board(board)
-  if win?(board, marker)
-    prompt "You win!"
-  elsif board_full?(board)
-    prompt "Looks like it's a tie!"
-  end
 end
 
 puts "Welcome to Tic Tac Toe!"
@@ -120,10 +116,13 @@ display_board(board)
 
 loop do # main game loop
   player_turn(board, marker)
+  break if win?(board, marker)
+  break if board_full?(board)
   puts "The computer is thinking..."
   sleep(1)
   computer_places_marker(board, computer_marker)
   puts "The computer has chosen!"
   display_board(board)
+  break if win?(board, computer_marker)
   break if board_full?(board)
 end
