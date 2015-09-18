@@ -2,6 +2,17 @@
 
 require 'pry'
 
+WINNING_SET = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+  [1, 4, 7],
+  [2, 5, 8],
+  [3, 6, 9],
+  [1, 5, 9],
+  [3, 5, 7]
+]
+
 def initialize_board
   new_board = {}
   (1..9).each { |position| new_board[position] = ' ' }
@@ -72,6 +83,21 @@ def board_full?(board)
   board.all? { |_, val| val != ' ' }
 end
 
+def win?(board, marker)
+  marker_positions = board.select { |_, val| val == marker }.keys.to_a
+  binding.pry
+end
+
+def player_turn(board, marker)
+  player_places_marker(board, marker)
+  display_board(board)
+  if win?(board, marker)
+    prompt "You win!"
+  elsif board_full?(board)
+    prompt "Looks like it's a tie!"
+  end
+end
+
 puts "Welcome to Tic Tac Toe!"
 puts "-----------------------"
 
@@ -92,10 +118,8 @@ computer_marker = (marker == 'O') ? 'X' : 'O'
 board = initialize_board
 display_board(board)
 
-loop do
-  player_places_marker(board, marker)
-  display_board(board)
-  break if board_full?(board)
+loop do # main game loop
+  player_turn(board, marker)
   puts "The computer is thinking..."
   sleep(1)
   computer_places_marker(board, computer_marker)
