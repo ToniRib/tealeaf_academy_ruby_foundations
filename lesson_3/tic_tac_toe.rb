@@ -47,6 +47,14 @@ def player_places_marker(board, marker)
   board.store(location.to_i, marker)
 end
 
+def computer_places_marker(board, marker)
+
+end
+
+def board_full?(board)
+  board.all? { |_,val| val != ' ' }
+end
+
 puts "Welcome to Tic Tac Toe!"
 puts "-----------------------"
 
@@ -69,6 +77,11 @@ display_board(board)
 
 loop do
   player_places_marker(board, marker)
+  display_board(board)
+  puts "The computer is thinking..."
+  sleep(1)
+  computer_places_marker(board, computer_marker)
+  puts "The computer has chosen!"
   display_board(board)
   break
 end
