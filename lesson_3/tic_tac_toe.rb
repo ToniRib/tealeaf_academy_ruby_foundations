@@ -2,23 +2,22 @@
 
 def initialize_board
   new_board = {}
-  board_selectors = %w(tl tm tr ml mm mr bl bm br)
-  board_selectors.each { |position| new_board[position.to_sym] = ' '}
+  (1..9).each { |position| new_board[position] = ' '}
   new_board
 end
 
 def display_board(board)
   puts ""
   puts "     |     |"
-  puts "  #{board[:tl]}  |  #{board[:tm]}  |  #{board[:tr]}"
+  puts "  #{board[1]}  |  #{board[2]}  |  #{board[3]}"
   puts "     |     |"
   puts "-----+-----+-----"
   puts "     |     |"
-  puts "  #{board[:ml]}  |  #{board[:mm]}  |  #{board[:mr]}"
+  puts "  #{board[4]}  |  #{board[5]}  |  #{board[6]}"
   puts "     |     |"
   puts "-----+-----+-----"
   puts "     |     |"
-  puts "  #{board[:bl]}  |  #{board[:bm]}  |  #{board[:br]}"
+  puts "  #{board[7]}  |  #{board[8]}  |  #{board[9]}"
   puts "     |     |"
   puts ""
 end
@@ -40,8 +39,8 @@ def display_marker(char)
   end
 end
 
-def player_turn
-
+def player_places_marker(board)
+  prompt "Where would you like to place your marker? (1 - 9)"
 end
 
 puts "Welcome to Tic Tac Toe!"
@@ -63,3 +62,9 @@ computer_marker = (marker == 'O') ? 'X' : 'O'
 
 board = initialize_board
 display_board(board)
+
+loop do
+
+  location = gets.chomp.downcase
+  break
+end
