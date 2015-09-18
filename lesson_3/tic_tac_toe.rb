@@ -2,6 +2,7 @@
 
 require 'pry'
 
+EMPTY_SPACE = ' '
 WINNING_SET = [
   [1, 2, 3],
   [4, 5, 6],
@@ -15,7 +16,7 @@ WINNING_SET = [
 
 def initialize_board
   new_board = {}
-  (1..9).each { |position| new_board[position] = ' ' }
+  (1..9).each { |position| new_board[position] = EMPTY_SPACE }
   new_board
 end
 
@@ -76,11 +77,11 @@ def computer_places_marker(board, marker)
 end
 
 def valid_location?(loc, board)
-  board[loc.to_i] == ' '
+  board[loc.to_i] == EMPTY_SPACE
 end
 
 def board_full?(board)
-  board.all? { |_, val| val != ' ' }
+  board.all? { |_, val| val != EMPTY_SPACE }
 end
 
 def win?(board, marker)
