@@ -1,5 +1,7 @@
 # tic_tac_toe.rb
 
+require 'pry'
+
 def initialize_board
   new_board = {}
   (1..9).each { |position| new_board[position] = ' '}
@@ -39,8 +41,10 @@ def display_marker(char)
   end
 end
 
-def player_places_marker(board)
+def player_places_marker(board, marker)
   prompt "Where would you like to place your marker? (1 - 9)"
+  location = gets.chomp
+  board.store(location.to_i, marker)
 end
 
 puts "Welcome to Tic Tac Toe!"
@@ -64,7 +68,7 @@ board = initialize_board
 display_board(board)
 
 loop do
-
-  location = gets.chomp.downcase
+  player_places_marker(board, marker)
+  display_board(board)
   break
 end
