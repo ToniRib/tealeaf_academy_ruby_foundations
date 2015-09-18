@@ -4,7 +4,7 @@ require 'pry'
 
 def initialize_board
   new_board = {}
-  (1..9).each { |position| new_board[position] = ' '}
+  (1..9).each { |position| new_board[position] = ' ' }
   new_board
 end
 
@@ -42,17 +42,34 @@ def display_marker(char)
 end
 
 def player_places_marker(board, marker)
-  prompt "Where would you like to place your marker? (1 - 9)"
-  location = gets.chomp
+  location = ''
+  loop do
+    prompt "Where would you like to place your marker? (1 - 9)"
+    location = gets.chomp
+    if valid_location?(location, board)
+      break
+    else
+      prompt "Please select a valid location that has not been chosen yet"
+    end
+  end
   board.store(location.to_i, marker)
 end
 
 def computer_places_marker(board, marker)
+  location = ''
+  loop do
+    location = (1..9).to_a.sample
+    break if valid_location?(location, board)
+  end
+  board.store(location.to_i, marker)
+end
 
+def valid_location?(loc, board)
+  board[loc.to_i] == ' '
 end
 
 def board_full?(board)
-  board.all? { |_,val| val != ' ' }
+  board.all? { |_, val| val != ' ' }
 end
 
 puts "Welcome to Tic Tac Toe!"
@@ -78,10 +95,11 @@ display_board(board)
 loop do
   player_places_marker(board, marker)
   display_board(board)
+  break if board_full?(board)
   puts "The computer is thinking..."
   sleep(1)
   computer_places_marker(board, computer_marker)
   puts "The computer has chosen!"
   display_board(board)
-  break
+  break if board_full?(board)
 end
