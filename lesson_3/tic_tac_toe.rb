@@ -10,15 +10,15 @@ end
 def display_board(board)
   puts ""
   puts "     |     |"
-  puts "  " + board[:tl] + "  |  " + board[:tm] + "  |  " + board[:tr]
+  puts "  #{board[:tl]}  |  #{board[:tm]}  |  #{board[:tr]}"
   puts "     |     |"
   puts "-----+-----+-----"
   puts "     |     |"
-  puts "  " + board[:ml] + "  |  " + board[:mm] + "  |  " + board[:mr]
+  puts "  #{board[:ml]}  |  #{board[:mm]}  |  #{board[:mr]}"
   puts "     |     |"
   puts "-----+-----+-----"
   puts "     |     |"
-  puts "  " + board[:bl] + "  |  " + board[:bm] + "  |  " + board[:br]
+  puts "  #{board[:bl]}  |  #{board[:bm]}  |  #{board[:br]}"
   puts "     |     |"
   puts ""
 end
