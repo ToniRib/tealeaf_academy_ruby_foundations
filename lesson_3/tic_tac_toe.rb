@@ -1,19 +1,10 @@
 # tic_tac_toe.rb
 
 def initialize_board
-  puts ""
-  puts "     |     |"
-  puts "     |     |"
-  puts "     |     |"
-  puts "-----+-----+-----"
-  puts "     |     |"
-  puts "     |     |"
-  puts "     |     |"
-  puts "-----+-----+-----"
-  puts "     |     |"
-  puts "     |     |"
-  puts "     |     |"
-  puts ""
+  new_board = {}
+  board_selectors = %w(tl tm tr ml mm mr bl bm br)
+  board_selectors.each { |position| new_board[position.to_sym] = ' '}
+  new_board
 end
 
 def display_board(board)
@@ -55,7 +46,6 @@ end
 
 puts "Welcome to Tic Tac Toe!"
 puts "-----------------------"
-initialize_board
 
 marker = ''
 prompt "Would you like to be X or O?"
@@ -71,16 +61,5 @@ end
 
 computer_marker = (marker == 'O') ? 'X' : 'O'
 
-board = {
-  tl: ' ',
-  tm: ' ',
-  tr: ' ',
-  ml: ' ',
-  mm: ' ',
-  mr: ' ',
-  bl: ' ',
-  bm: ' ',
-  br: ' '
-}
-
+board = initialize_board
 display_board(board)
