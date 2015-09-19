@@ -11,6 +11,15 @@ def prompt(message)
   puts "\n=> #{message}"
 end
 
+def joinor(array, delim=', ', word='and')
+  array[-1] = "#{word} #{array.last}" if array.size > 1
+  if array.size < 3
+    array.join(' ')
+  else
+    array.join(delim)
+  end
+end
+
 def initialize_deck
   values = NUM_CARDS.to_a.map { |num| num.to_s }.push(NAME_CARDS).flatten
   values.product(SUITS)
@@ -29,7 +38,29 @@ def display_one_card_of_dealer(hand)
 end
 
 def display_player_hand(hand)
-  puts "You have: #{hand[0][0]} and #{hand[1][0]}"
+  puts "You have: #{joinor(hand.collect { |i| i[0] })}"
+end
+
+def busted?(hand)
+  calculate_total(hand) > 21
+end
+
+def deal_card(deck, hand)
+  card = deck.sample
+  hand.push(card)
+  remove_cards_from_deck(deck, card)
+end
+
+def calculate_total(hand)
+  total = 0
+  hand.each do |card|
+    if card[0].to_i == 0
+      total += 10
+    else
+      total += card[0].to_i
+    end
+  end
+  total
 end
 
 puts "----------------------"
@@ -46,5 +77,14 @@ remove_cards_from_deck(deck, dealer_hand)
 display_one_card_of_dealer(dealer_hand)
 display_player_hand(player_hand)
 
-prompt "What would you like to do?"
-answer = gets.chomp.downcase
+loop do
+  prompt "What would you like to do, hit or stay?"
+  answer = gets.chomp.downcase
+  deal_card(deck, player_hand) if answer == 'hit'
+  break if answer == 'stay' || busted?(player_hand)
+  display_player_hand(player_hand)
+end
+
+if busted?(player_hand)
+  puts "You busted!"
+end
