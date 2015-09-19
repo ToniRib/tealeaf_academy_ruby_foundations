@@ -57,16 +57,34 @@ end
 
 def calculate_total(hand)
   total = 0
-  hand.each do |card|
-    if card[0].to_i == 0 && card[0] != 'Ace'
-      total += 10
-    elsif card[0] == 'Ace'
+  values = hand.collect { |i| i[0] }
+  non_aces = values.select { |val| val != 'Ace'}
+  num_aces = values.count('Ace')
 
+  non_aces.each do |val|
+    total += convert_card_to_value(val)
+  end
+
+  num_aces.times do |i|
+    if (i == 0) && (total + 11 <= 21)
+      total += 11
     else
-      total += card[0].to_i
+      total += 1
     end
   end
   total
+end
+
+def display_total(hand)
+  puts "Total: #{calculate_total(hand)} points"
+end
+
+def convert_card_to_value(card)
+  if card.to_i != 0
+    card.to_i
+  else
+    10
+  end
 end
 
 def sort_hand!(hand)
@@ -96,39 +114,47 @@ loop do # main game loop
   remove_cards_from_deck(deck, dealer_hand)
 
   display_one_card_of_dealer(dealer_hand)
-  display_player_hand(player_hand)
+  display_player_hand(sort_hand!(player_hand))
 
-  loop do # player turn loop
-    prompt "What would you like to do, hit or stay?"
-    answer = gets.chomp.downcase
-    deal_card(deck, player_hand) if answer == 'hit'
-    break if answer == 'stay' || busted?(player_hand)
-    display_player_hand(player_hand)
-  end
+  loop do # dealing and counting loop
+    loop do # player turn loop
+      prompt "What would you like to do, hit or stay?"
+      answer = gets.chomp.downcase
+      deal_card(deck, player_hand) if answer == 'hit'
+      display_player_hand(sort_hand!(player_hand))
+      break if answer == 'stay' || busted?(player_hand)
+    end
 
-  if busted?(player_hand)
-    puts "You busted!"
-    puts "The dealer wins!"
-    break
-  else
-    puts "You chose to stay."
-  end
+    display_total(player_hand)
 
-  loop do # dealer turn loop
-    deal_card(deck, dealer_hand) unless calculate_total(dealer_hand) >= 17
-    display_dealer_hand(dealer_hand)
-    break if busted?(dealer_hand) || calculate_total(dealer_hand) >= 17
-  end
+    if busted?(player_hand)
+      puts "You busted! The dealer wins!"
+      break
+    else
+      puts "You chose to stay."
+    end
 
-  if busted?(dealer_hand)
-    puts "The dealer busted! You win!"
-    break
-  end
+    loop do # dealer turn loop
+      deal_card(deck, dealer_hand) unless calculate_total(dealer_hand) >= 17
+      display_dealer_hand(sort_hand!(dealer_hand))
+      break if busted?(dealer_hand) || calculate_total(dealer_hand) >= 17
+    end
 
-  if compare_cards(player_hand, dealer_hand)
-    puts "You won!"
-  else
-    puts "The dealer beat you!"
+    display_total(dealer_hand)
+
+    if busted?(dealer_hand)
+      puts "The dealer busted! You win!"
+      break
+    end
+
+    if compare_cards(player_hand, dealer_hand)
+      puts "You won!"
+      break
+    else
+      puts "The dealer beat you!"
+      break
+    end
+
   end
 
   prompt "Would you like to play again?"
