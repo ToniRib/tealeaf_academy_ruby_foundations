@@ -21,12 +21,12 @@ def joinor(array, delim=', ', word='and')
 end
 
 def initialize_deck
-  values = NUM_CARDS.to_a.map { |num| num.to_s }.push(NAME_CARDS).flatten
+  values = NUM_CARDS.to_a.map.to_s.push(NAME_CARDS).flatten
   values.product(SUITS)
 end
 
 def deal_initial_cards(deck)
-  cards = deck.sample(2)
+  deck.sample(2)
 end
 
 def remove_cards_from_deck(deck, cards)
@@ -58,7 +58,7 @@ end
 def calculate_total(hand)
   total = 0
   values = hand.collect { |i| i[0] }
-  non_aces = values.select { |val| val != 'Ace'}
+  non_aces = values.select { |val| val != 'Ace' }
   num_aces = values.count('Ace')
 
   non_aces.each do |val|
@@ -154,7 +154,6 @@ loop do # main game loop
       puts "The dealer beat you!"
       break
     end
-
   end
 
   prompt "Would you like to play again?"
