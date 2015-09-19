@@ -41,6 +41,10 @@ def display_player_hand(hand)
   puts "You have: #{joinor(hand.collect { |i| i[0] })}"
 end
 
+def display_dealer_hand(hand)
+  puts "The dealer has: #{joinor(hand.collect { |i| i[0] })}"
+end
+
 def busted?(hand)
   calculate_total(hand) > 21
 end
@@ -63,28 +67,60 @@ def calculate_total(hand)
   total
 end
 
+def compare_cards(hand1, hand2)
+  calculate_total(hand1) > calculate_total(hand2)
+end
+
 puts "----------------------"
 puts "Welcome to Twenty One!"
 puts "----------------------"
-puts "\nDealing initial cards..."
 
-deck = initialize_deck
-player_hand = deal_initial_cards(deck)
-remove_cards_from_deck(deck, player_hand)
-dealer_hand = deal_initial_cards(deck)
-remove_cards_from_deck(deck, dealer_hand)
+loop do # main game loop
+  puts "\nDealing initial cards..."
 
-display_one_card_of_dealer(dealer_hand)
-display_player_hand(player_hand)
+  deck = initialize_deck
+  player_hand = deal_initial_cards(deck)
+  remove_cards_from_deck(deck, player_hand)
+  dealer_hand = deal_initial_cards(deck)
+  remove_cards_from_deck(deck, dealer_hand)
 
-loop do
-  prompt "What would you like to do, hit or stay?"
-  answer = gets.chomp.downcase
-  deal_card(deck, player_hand) if answer == 'hit'
-  break if answer == 'stay' || busted?(player_hand)
+  display_one_card_of_dealer(dealer_hand)
   display_player_hand(player_hand)
-end
 
-if busted?(player_hand)
-  puts "You busted!"
+  loop do # player turn loop
+    prompt "What would you like to do, hit or stay?"
+    answer = gets.chomp.downcase
+    deal_card(deck, player_hand) if answer == 'hit'
+    break if answer == 'stay' || busted?(player_hand)
+    display_player_hand(player_hand)
+  end
+
+  if busted?(player_hand)
+    puts "You busted!"
+    puts "The dealer wins!"
+    break
+  else
+    puts "You chose to stay."
+  end
+
+  loop do # dealer turn loop
+    deal_card(deck, dealer_hand) unless calculate_total(dealer_hand) >= 17
+    display_dealer_hand(dealer_hand)
+    break if busted?(dealer_hand) || calculate_total(dealer_hand) >= 17
+  end
+
+  if busted?(dealer_hand)
+    puts "The dealer busted! You win!"
+    break
+  end
+
+  if compare_cards(player_hand, dealer_hand)
+    puts "You won!"
+  else
+    puts "The dealer beat you!"
+  end
+
+  prompt "Would you like to play again?"
+  answer = gets.chomp
+  break unless answer.downcase.start_with?('y')
 end
