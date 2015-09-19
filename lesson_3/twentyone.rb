@@ -107,6 +107,40 @@ def compare_cards(hand1, hand2)
   calculate_total(hand1) > calculate_total(hand2)
 end
 
+def detect_result(player, dealer)
+  player_total = calculate_total(player)
+  dealer_total = calculate_total(dealer)
+
+  if player_total > 21
+    :player_busted
+  elsif dealer_total > 21
+    :dealer_busted
+  elsif player_total > dealer_total
+    :player
+  elsif player_total < dealer_total
+    :dealer
+  else
+    :tie
+  end
+end
+
+def display_result(player, dealer)
+  result = detect_result(player, dealer)
+
+  case result
+  when :player_busted
+    prompt "You busted! The dealer wins!"
+  when :dealer_busted
+    prompt "The dealer busted! You win!"
+  when :player
+    prompt "You win!"
+  when :dealer
+    prompt "The dealer wins!"
+  when :tie
+    prompt "It's a tie!"
+  end
+end
+
 puts "----------------------"
 puts "Welcome to Twenty One!"
 puts "----------------------"
@@ -141,10 +175,10 @@ loop do # main game loop
     end
 
     if busted?(player_hand)
-      puts "You busted! The dealer wins!"
+      display_result(player_hand, dealer_hand)
       break
     else
-      puts "You chose to stay."
+      puts "You chose to stay at #{calculate_total(player_hand)} points"
     end
 
     loop do # dealer turn loop
@@ -154,17 +188,12 @@ loop do # main game loop
     end
 
     if busted?(dealer_hand)
-      puts "The dealer busted! You win!"
+      display_result(player_hand, dealer_hand)
       break
     end
 
-    if compare_cards(player_hand, dealer_hand)
-      puts "You won!"
-      break
-    else
-      puts "The dealer beat you!"
-      break
-    end
+    display_result(player_hand, dealer_hand)
+    break
   end
 
   prompt "Would you like to play again?"
