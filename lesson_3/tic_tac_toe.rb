@@ -71,8 +71,26 @@ def player_places_marker!(board, marker)
 end
 
 def computer_places_marker!(board, marker)
-  location = empty_positions(board).sample
+
+  location = nil
+  WINNING_SET.each do |line|
+    location = find_at_risk_location(line, board, alternate_marker(marker))
+    break if location
+  end
+
+  if !location
+    location = empty_positions(board).sample
+  end
+
   board.store(location.to_i, marker)
+end
+
+def find_at_risk_location(line, board, marker)
+  if board.values_at(*line).count(marker) == 2
+    board.select { |k, v| line.include?(k) && v == EMPTY_SPACE }.keys.first
+  else
+    nil
+  end
 end
 
 def place_piece!(board, player)
@@ -96,9 +114,13 @@ def board_full?(board)
 end
 
 def win?(board, player)
-  marker_positions = board.select { |_, val| val == player[:marker] }.keys.to_a
+  marker_positions = find_marker_positions(board, player[:marker])
   combos = marker_positions.combination(3).to_a
   combos.any? { |combo| WINNING_SET.include?(combo) }
+end
+
+def find_marker_positions(board, marker)
+  board.select { |_, val| val == marker }.keys.to_a
 end
 
 def display_tie_message
