@@ -13,10 +13,11 @@ WINNING_SET = [
   [1, 5, 9],
   [3, 5, 7]
 ]
+MARKER_LOCATIONS = (1..9)
 
 def initialize_board
   new_board = {}
-  (1..9).each { |position| new_board[position] = EMPTY_SPACE }
+  MARKER_LOCATIONS.each { |position| new_board[position] = EMPTY_SPACE }
   new_board
 end
 
@@ -56,7 +57,7 @@ end
 def player_places_marker(board, marker)
   location = ''
   loop do
-    prompt "Where would you like to place your marker? (1 - 9)"
+    prompt "Where would you like to place your marker? #{joinor(empty_positions(board))}"
     location = gets.chomp
     if valid_location?(location, board)
       break
@@ -70,7 +71,7 @@ end
 def computer_places_marker(board, marker)
   location = ''
   loop do
-    location = (1..9).to_a.sample
+    location = MARKER_LOCATIONS.to_a.sample
     break if valid_location?(location, board)
   end
   board.store(location.to_i, marker)
@@ -78,6 +79,10 @@ end
 
 def valid_location?(loc, board)
   board[loc.to_i] == EMPTY_SPACE
+end
+
+def empty_positions(board)
+  board.select { |_, val| val == EMPTY_SPACE }.keys
 end
 
 def board_full?(board)
@@ -105,6 +110,11 @@ end
 
 def display_tie_message
   puts "Looks like it's a tie this time."
+end
+
+def joinor(array, delim=', ', word='or')
+  array[-1] = "#{word} #{array.last}" if array.size > 1
+  array.join(delim)
 end
 
 loop do # main game loop
