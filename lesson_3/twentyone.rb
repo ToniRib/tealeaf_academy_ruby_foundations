@@ -1,6 +1,5 @@
 # twentyone.rb
 
-# TODO: add checks to make sure player types hit or stay
 # TODO: add messages into their own method
 
 require 'pry'
@@ -21,6 +20,19 @@ def joinor(array, delim=', ', word='and')
   else
     array.join(delim)
   end
+end
+
+def convert_choice(word)
+  case word
+  when /^hi?t?$/
+    'hit'
+  when /^st?a?y?$/
+    'stay'
+  end
+end
+
+def valid_choice?(word)
+  word == 'hit' || word == 'stay'
 end
 
 def initialize_deck
@@ -118,9 +130,14 @@ loop do # main game loop
     loop do # player turn loop
       prompt "What would you like to do, hit or stay?"
       answer = gets.chomp.downcase
-      deal_card(deck, player_hand) if answer == 'hit'
-      display_player_hand(sort_hand!(player_hand))
-      break if answer == 'stay' || busted?(player_hand)
+      answer = convert_choice(answer)
+      if valid_choice?(answer)
+        deal_card(deck, player_hand) if answer == 'hit'
+        display_player_hand(sort_hand!(player_hand))
+        break if answer == 'stay' || busted?(player_hand)
+      else
+        prompt "Please type either hit (h) or stay (s)"
+      end
     end
 
     if busted?(player_hand)
