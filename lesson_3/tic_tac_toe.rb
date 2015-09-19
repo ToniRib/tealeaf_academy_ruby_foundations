@@ -71,11 +71,20 @@ def player_places_marker!(board, marker)
 end
 
 def computer_places_marker!(board, marker)
-
   location = nil
+
+  # offense
   WINNING_SET.each do |line|
-    location = find_at_risk_location(line, board, alternate_marker(marker))
+    location = find_at_risk_location(line, board, marker)
     break if location
+  end
+
+  # defense
+  if !location
+    WINNING_SET.each do |line|
+      location = find_at_risk_location(line, board, alternate_marker(marker))
+      break if location
+    end
   end
 
   if !location
