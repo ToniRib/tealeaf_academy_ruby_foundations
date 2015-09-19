@@ -75,11 +75,11 @@ def computer_places_marker!(board, marker)
   board.store(location.to_i, marker)
 end
 
-def place_piece!(board, cur_player, cur_marker)
-  if cur_player == 'user'
-    player_places_marker!(board, cur_marker)
+def place_piece!(board, player)
+  if player[:name] == PLAYERS[0]
+    player_places_marker!(board, player[:marker])
   else
-    computer_places_marker!(board, cur_marker)
+    computer_places_marker!(board, player[:marker])
   end
 end
 
@@ -95,8 +95,8 @@ def board_full?(board)
   board.all? { |_, val| val != EMPTY_SPACE }
 end
 
-def win?(board, marker)
-  marker_positions = board.select { |_, val| val == marker }.keys.to_a
+def win?(board, player)
+  marker_positions = board.select { |_, val| val == player[:marker] }.keys.to_a
   combos = marker_positions.combination(3).to_a
   combos.any? { |combo| WINNING_SET.include?(combo) }
 end
@@ -105,11 +105,11 @@ def display_tie_message
   puts "Looks like it's a tie this time."
 end
 
-def display_win_message(cur_player)
-  case cur_player
-  when 'user'
+def display_win_message(player)
+  case player[:name]
+  when PLAYERS[0]
     puts "You won this round!"
-  when 'computer'
+  when PLAYERS[1]
     puts "The computer beat you!"
   end
 end
@@ -123,62 +123,99 @@ def joinor(array, delim=', ', word='or')
   end
 end
 
-def determine_starting_player
-  PLAYERS.sample
+def randomize_starting_player(players_array)
+  PLAYERS.sample == PLAYERS[0] ? players_array[0] : players_array[1]
 end
 
-def alternate_player(player)
-  player == PLAYERS[0] ? PLAYERS[1] : PLAYERS[0]
+def alternate_player(cur_player, all_players)
+  cur_player == all_players[0] ? all_players[1] : all_players[0]
 end
 
-def opposite_marker(marker)
-  marker == MARKERS[0] ? MARKERS[1] : MARKERS[0]
+def alternate_marker(mark)
+  mark == MARKERS[0] ? MARKERS[1] : MARKERS[0]
 end
 
-def determine_starting_marker(cur_player, user, computer)
-  case cur_player
-  when 'user'
-    user
-  when 'computer'
-    computer
+def display_whose_turn(player)
+  if player[:name] == PLAYERS[0]
+    puts "Your move:"
+  else
+    puts "Computer's move"
   end
 end
+
+def add_point_to_winner(player)
+  player[:score] += 1
+end
+
+def display_scores(players)
+  puts "Your Score: #{players[0][:score]}, Computer's Score: #{players[1][:score]}"
+end
+
+def announce_winner(player)
+  if player[:name] == PLAYERS[0]
+    puts "#{player[:name].capitalize} has scored 5 points and won the game! Congratulations!"
+  else
+    puts "The computer scored 5 points and defeated you! So sorry for your loss."
+  end
+end
+
+
+puts "Welcome to Tic Tac Toe!"
+puts "-----------------------"
+
+marker = ''
+prompt "Would you like to be #{MARKERS[0]} or #{MARKERS[1]}?"
+loop do
+  marker = gets.chomp.upcase
+  if valid_marker?(marker)
+    display_marker(marker)
+    break
+  else
+    prompt "Please choose either X or O"
+  end
+end
+
+game_players = [
+  {
+    name: PLAYERS[0],
+    marker: marker,
+    score: 0
+  },
+  {
+    name: PLAYERS[1],
+    marker: alternate_marker(marker),
+    score: 0
+  }
+]
 
 loop do # main game loop
-  puts "Welcome to Tic Tac Toe!"
-  puts "-----------------------"
-
-  marker = ''
-  prompt "Would you like to be #{joinor(MARKERS)}?"
-  loop do
-    marker = gets.chomp.upcase
-    if valid_marker?(marker)
-      display_marker(marker)
-      break
-    else
-      prompt "Please choose either X or O"
-    end
-  end
-
-  computer_marker = determine_computer_marker(marker)
-
   board = initialize_board
+  puts "Let's begin!"
+  display_board(board)
 
-  current_player = determine_starting_player
-  current_marker = determine_starting_marker(current_player, marker, computer_marker)
+  current_player = randomize_starting_player(game_players)
 
   loop do # main turn loop
+    place_piece!(board, current_player)
+    display_whose_turn(current_player)
     display_board(board)
-    place_piece!(board, current_player, current_marker)
-    current_player = alternate_player(current_player)
-    current_marker = alternate_marker(current_marker)
-    if win?(board, current_marker)
+
+    if win?(board, current_player)
+      add_point_to_winner(current_player)
       display_win_message(current_player)
+      display_scores(game_players)
       break
     elsif board_full?(board)
       display_tie_message
       break
     end
+
+    current_player = alternate_player(current_player, game_players)
+  end
+
+  if game_players.any? { |player| player[:score] > 4 }
+    announce_winner(current_player)
+    break
   end
 
   prompt "Would you like to play again?"
