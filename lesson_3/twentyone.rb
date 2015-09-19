@@ -21,7 +21,7 @@ def joinor(array, delim=', ', word='and')
 end
 
 def initialize_deck
-  values = NUM_CARDS.to_a.map.to_s.push(NAME_CARDS).flatten
+  values = NUM_CARDS.to_a.map(&:to_s).push(NAME_CARDS).flatten
   values.product(SUITS)
 end
 
