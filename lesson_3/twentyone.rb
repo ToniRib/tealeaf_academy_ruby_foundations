@@ -1,5 +1,8 @@
 # twentyone.rb
 
+# TODO: add checks to make sure player types hit or stay
+# TODO: add messages into their own method
+
 require 'pry'
 
 SUITS = %w(Hearts Diamonds Clubs Spades)
@@ -25,10 +28,6 @@ def initialize_deck
   values.product(SUITS)
 end
 
-def deal_initial_cards(deck)
-  deck.sample(2)
-end
-
 def remove_cards_from_deck(deck, cards)
   deck.reject! { |card| cards.include?(card) }
 end
@@ -38,11 +37,11 @@ def display_one_card_of_dealer(hand)
 end
 
 def display_player_hand(hand)
-  puts "You have: #{joinor(hand.collect { |i| i[0] })}"
+  puts "You have: #{joinor(hand.collect { |i| i[0] })} for a total of #{calculate_total(hand)} points"
 end
 
 def display_dealer_hand(hand)
-  puts "The dealer has: #{joinor(hand.collect { |i| i[0] })}"
+  puts "The dealer has: #{joinor(hand.collect { |i| i[0] })} for a total of #{calculate_total(hand)} points"
 end
 
 def busted?(hand)
@@ -75,10 +74,6 @@ def calculate_total(hand)
   total
 end
 
-def display_total(hand)
-  puts "Total: #{calculate_total(hand)} points"
-end
-
 def convert_card_to_value(card)
   if card.to_i != 0
     card.to_i
@@ -108,10 +103,13 @@ loop do # main game loop
   puts "\nDealing initial cards..."
 
   deck = initialize_deck
-  player_hand = deal_initial_cards(deck)
-  remove_cards_from_deck(deck, player_hand)
-  dealer_hand = deal_initial_cards(deck)
-  remove_cards_from_deck(deck, dealer_hand)
+  player_hand = []
+  dealer_hand = []
+
+  2.times do
+    deal_card(deck, player_hand)
+    deal_card(deck, dealer_hand)
+  end
 
   display_one_card_of_dealer(dealer_hand)
   display_player_hand(sort_hand!(player_hand))
@@ -125,8 +123,6 @@ loop do # main game loop
       break if answer == 'stay' || busted?(player_hand)
     end
 
-    display_total(player_hand)
-
     if busted?(player_hand)
       puts "You busted! The dealer wins!"
       break
@@ -139,8 +135,6 @@ loop do # main game loop
       display_dealer_hand(sort_hand!(dealer_hand))
       break if busted?(dealer_hand) || calculate_total(dealer_hand) >= 17
     end
-
-    display_total(dealer_hand)
 
     if busted?(dealer_hand)
       puts "The dealer busted! You win!"
@@ -160,3 +154,5 @@ loop do # main game loop
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
 end
+
+prompt "Thanks for playing Twenty One!"
