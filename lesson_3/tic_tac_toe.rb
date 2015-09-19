@@ -75,16 +75,20 @@ def computer_places_marker!(board, marker)
 
   # offense
   WINNING_SET.each do |line|
-    location = find_at_risk_location(line, board, marker)
+    location = find_best_location(line, board, marker)
     break if location
   end
 
   # defense
   if !location
     WINNING_SET.each do |line|
-      location = find_at_risk_location(line, board, alternate_marker(marker))
+      location = find_best_location(line, board, alternate_marker(marker))
       break if location
     end
+  end
+
+  if !location && empty_positions(board).include?(5)
+    location = 5
   end
 
   if !location
@@ -94,11 +98,9 @@ def computer_places_marker!(board, marker)
   board.store(location.to_i, marker)
 end
 
-def find_at_risk_location(line, board, marker)
+def find_best_location(line, board, marker)
   if board.values_at(*line).count(marker) == 2
     board.select { |k, v| line.include?(k) && v == EMPTY_SPACE }.keys.first
-  else
-    nil
   end
 end
 
@@ -189,7 +191,6 @@ def announce_winner(player)
     puts "The computer scored 5 points and defeated you! So sorry for your loss."
   end
 end
-
 
 puts "Welcome to Tic Tac Toe!"
 puts "-----------------------"
