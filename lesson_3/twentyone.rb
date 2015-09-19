@@ -71,8 +71,8 @@ end
 
 def sort_hand!(hand)
   if hand.include?('Ace')
-    hand.rotate!(hand.index('Ace')).reverse!
-    hand.slice!(0, hand.length-1).sort!.push(hand.last)
+    aces = hand.select { |card| card == 'Ace' }
+    hand.select! { |card| card == 'Ace' }.sort!.push(aces).flatten!
   else
     hand.sort!
   end
