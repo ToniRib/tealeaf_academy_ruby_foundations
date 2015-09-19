@@ -58,13 +58,24 @@ end
 def calculate_total(hand)
   total = 0
   hand.each do |card|
-    if card[0].to_i == 0
+    if card[0].to_i == 0 && card[0] != 'Ace'
       total += 10
+    elsif card[0] == 'Ace'
+
     else
       total += card[0].to_i
     end
   end
   total
+end
+
+def sort_hand!(hand)
+  if hand.include?('Ace')
+    hand.rotate!(hand.index('Ace')).reverse!
+    hand.slice!(0, hand.length-1).sort!.push(hand.last)
+  else
+    hand.sort!
+  end
 end
 
 def compare_cards(hand1, hand2)
